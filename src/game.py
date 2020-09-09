@@ -7,7 +7,7 @@ class Game(Player):
 
     def handle_items(self, tools):
         choose = input(
-            f"You happen to see items around the room you are in. [0] to leave them, [1] to look closer, [2] to leave items you currently have: ")
+            f"You happen to see items around the room you are in. [0] to leave them, [1] to look closer, [2] to drop items you currently have: ")
         if choose == str(1):
             picked = input(f'Pick which items you want to carry: {tools} >>>')
             try:
@@ -21,7 +21,7 @@ class Game(Player):
                 if len(self.player_items) == 0:
                     print('You have no items in your possession')
                 else:
-                    drop = input(f'Which item from your storage do you want to remove: {self.player_items} >>>')
+                    drop = input(f'Which item from your storage do you want to drop: {self.player_items} >>>')
                     self.player_drop(int(drop)-1)
                     self.room_add(tools[int(drop)-1])
             except IndexError:
