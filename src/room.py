@@ -17,13 +17,13 @@ class Room(Item):
         room = f'{self.name}: {self.description}\n'
         items = f'{self.room_items}'
         if self.n_to:
-            return f'{room} \n You have entered the {self.name} from the {self.n_to.name} \n'
+            return f'{room} \nYou have entered the {self.name}\n'
         elif self.s_to:
-            return f'{room} \n You have entered the {self.name} from the {self.s_to.name} \n'
+            return f'{room} \nYou have entered the {self.name} \n'
         elif self.e_to:
-            return f'{room} \n You have entered the {self.name} from the {self.e_to.name} \n'
+            return f'{room} \nYou have entered the {self.name} \n'
         elif self.w_to:
-            return f'{room} \n You have entered the {self.name} from the {self.w_to.namme} \n'
+            return f'{room} \nYou have entered the {self.name} \n'
         return room + items
 
     def stuff(self):

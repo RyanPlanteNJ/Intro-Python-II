@@ -4,6 +4,9 @@ from game import Game
 
 # Declare all the rooms
 
+outside_start = Room("Dark Cave", "You awake in an unknown place. Unaware of your surroundings, you begin to look around for any clues")
+
+
 outside = Room("Outside Cave Entrance", "North of you, the cave mount beckons",['sticks','leaves'])
 
 foyer = Room("Foyer", "Dim light filters in from the south. Dusty passages run north and east", ['lamp','book','mirror'])
@@ -16,7 +19,8 @@ treasure = Room("Treasure Chamber", "You've found the long-lost treasure chamber
 
 
 # Link rooms together
-
+outside_start.n_to = outside
+outside.s_to = outside_start
 outside.n_to = foyer
 foyer.s_to = outside
 foyer.n_to = overlook
@@ -43,12 +47,12 @@ treasure.s_to = narrow
 #
 # If the user enters "q", quit the game.
 
-player = Player(outside)
+player = Player(outside_start)
 game  = Game(Player)
 print(player.current_room)
 direction = game.control_direction()
 
-while direction != 'q' :
+while direction != 'q':
     try:
         if direction in {'n', 's', 'e', 'w'}:
             if hasattr(player.current_room, f'{direction}_to'):
@@ -59,7 +63,6 @@ while direction != 'q' :
         game.handle_items(player.current_room.room_items)
 
         direction = game.control_direction()
-
     except AttributeError as e:
         print(f"\n You've just died bro. Wtf")
         break

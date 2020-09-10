@@ -7,29 +7,33 @@ class Game(Player):
 
     def handle_items(self, tools):
         choose = input(
-            f"You happen to see items around the room you are in. [0] to leave them, [1] to look closer, [2] to drop items you currently have: ")
-        if choose == str(1):
+            "You happen to see items around the room you are in. [Continue forward] to leave them, [investigate] to look closer, [look in bag] to see what items you are currently holding, [remove items] to drop items you currently have: ")
+        if choose == 'investigate':
             picked = input(f'Pick which items you want to carry: {tools} >>>')
             try:
                 self.player_add(tools[int(picked)-1])
                 self.room_drop(int(picked)-1)
             except IndexError:
-                print('This item does not exist. ')
+                print('This item does not exist.')
                 pass
-        elif choose == str(2):
+        elif choose == 'remove items':
             try:
                 if len(self.player_items) == 0:
                     print('You have no items in your possession')
                 else:
-                    drop = input(f'Which item from your storage do you want to drop: {self.player_items} >>>')
+                    drop = input(f'Which item from your storage do you want to drop : {self.player_items} >>>')
                     self.player_drop(int(drop)-1)
                     self.room_add(tools[int(drop)-1])
             except IndexError:
                 pass
-        if len(self.player_items) > 0:
-            print(f'Current Storage: {self.player_items} \n')
-        else:
-            print('You have nothing in your storage that you can use')
+        elif choose == 'look in bag':
+            try:
+                if len(self.player_items) == 0:
+                    print('There are no items in your storage')
+                else:
+                    print(f'Current storage: {self.player_items}\n')
+            except IndexError:
+                pass
 
     def control_direction(self):
         return input('Pick a direction [n,s,e,w]: ')
