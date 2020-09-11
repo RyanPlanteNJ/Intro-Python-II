@@ -4,18 +4,18 @@ from game import Game
 
 # Declare all the rooms
 
-outside_start = Room("Dark Cave", "You awake in an unknown place. Unaware of your surroundings, you begin to look around for any clues")
+outside_start = Room("Dark Cave", "You awake in an unknown place. Unaware of your surroundings, you begin to look around for any clues",[])
 
 
 outside = Room("Outside Cave Entrance", "North of you, the cave mount beckons", ['sticks', 'leaves'])
 
 foyer = Room("Foyer", "Dim light filters in from the south. Dusty passages run north and east", ['lamp', 'book', 'mirror'])
 
-overlook = Room("Grand Overlook", "A steep cliff appears before you, falling into the darkness. Ahead to the north, a light flickers in the distance, but there is no way across the chasm.")
+overlook = Room("Grand Overlook", "A steep cliff appears before you, falling into the darkness. Ahead to the north, a light flickers in the distance, but there is no way across the chasm.",[])
 
-narrow = Room("Narrow Passage", "The narrow passage bends here from west to north. The smell of gold permeates the air.")
+narrow = Room("Narrow Passage", "The narrow passage bends here from west to north. The smell of gold permeates the air.",[])
 
-treasure = Room("Treasure Chamber", "You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by earlier adventurers. The only exit is to the south.")
+treasure = Room("Treasure Chamber", "You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by earlier adventurers. The only exit is to the south.",[])
 
 
 # Link rooms together
@@ -53,16 +53,13 @@ print(player.current_room)
 direction = game.control_direction()
 
 while direction != 'q':
-    try:
-        if direction in {'n', 's', 'e', 'w'}:
-            if hasattr(player.current_room, f'{direction}_to'):
-                player.current_room = getattr(
-                    player.current_room, f'{direction}_to')
-                tools = player.current_room.stuff()
-        print(f'\n{player.current_room}\n')
-        game.handle_items(player.current_room.room_items)
-
-        direction = game.control_direction()
-    except AttributeError as e:
-        print(f"\n You've just died bro. Wtf")
-        break
+    if direction in {'n', 's', 'e', 'w'}:
+        if hasattr(player.current_room, f'{direction}_to'):
+            player.current_room = getattr(
+                player.current_room, f'{direction}_to')
+            tools = player.current_room.stuff()
+            print(f'\n{player.current_room}')
+            game.handle_items(player.current_room.room_items)
+    else:
+        print('\nPlease pick a valid direction\n')
+    direction = game.control_direction()

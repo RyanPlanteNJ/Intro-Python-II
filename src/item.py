@@ -8,10 +8,10 @@ class Item:
         self.player_items.append(item)
 
     def player_drop(self, item):
-        self.player_items.remove(item)
+        self.player_items.pop(item)
 
     def room_add(self, item):
         self.room_items.append(item)
 
     def room_drop(self, item):
-        self.room_items.remove(item)
+        self.room_items.pop(item)

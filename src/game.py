@@ -7,11 +7,12 @@ class Game(Player):
 
     def handle_items(self, tools):
         choose = input(
-            "You happen to see items around the room you are in. [Continue forward] to leave them, [investigate] to look closer, [look in bag] to see what items you are currently holding, [remove items] to drop items you currently have: ")
+            "You happen to see items around the room you are in. [Continue forward] to leave, [investigate] to look closer, [look in bag] to see your storage, [remove items] to drop what you currently have: ")
         if choose == 'investigate':
-            picked = input(f'Pick which items you want to carry: {tools} >>>')
+            picked = input(f'\nPick which items you want to carry: {tools} >>>')
             try:
                 self.player_add(tools[int(picked)-1])
+                print(f'\nCurrent storage: {self.player_items}\n')
             except IndexError:
                 print('This item does not exist.')
                 pass
@@ -32,10 +33,8 @@ class Game(Player):
                     print(f'Current storage: {self.player_items}\n')
             except IndexError:
                 pass
-        if len(self.player_items) > 0:
-            print(f'\nCurrent storage: {self.player_items}\n')
-        else:
-            print('You might want to grab some stuff')
+        if len(self.player_items) == 0:
+            print('\nYou might want to grab some stuff')
     def control_direction(self):
         return input('Pick a direction [n,s,e,w]: ')
 
