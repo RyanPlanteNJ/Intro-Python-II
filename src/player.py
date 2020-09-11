@@ -1,19 +1,17 @@
 # Write a class to hold player information, e.g. what room they are in
 # currently.
-from item import Item
-
-class Player(Item):
-    def __init__(self, current_room, player_items=[]):
-        super().__init__(player_items)
+class Player:
+    def __init__(self, name, current_room, inventory = None):
+        self.name = name
         self.current_room = current_room
+        if inventory is None:
+            self.inventory = []
+        else:
+            self.inventory = inventory
 
-    def __str__(self):
-        return f'{self.items}'
+    def take_item(self, item):
+        self.inventory.append(item)
 
-    def stuff(self):
-        output = ''
-        n = 1
-        for tools in self.player_items:
-            output += f'\n{n}.{tools}'
-            n+=1
-        return output +'\n>>>'
+
+    def drop_item(self, item):
+        self.inventory.remove(item)
