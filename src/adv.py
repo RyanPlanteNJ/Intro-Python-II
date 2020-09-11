@@ -1,5 +1,7 @@
 from room import Room
 from player import Player
+from weapons import Weapons
+from equipment import Equipment
 from item import Item
 import sys
 
@@ -32,9 +34,11 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 item = {
-    'torch': Item('Torch', 'Not very useful, but it will do for now. Maybe we will find something better on your way through this place'),
-    'dagger': Item("Rasaka's Fang",'You feel it eminating immense power'),
-    'helmet': Item('Red Knights Helmet', 'As weird as it is, when you wear this helmet, it gives you more strength ')
+    'torch': Item('Torch', 'Not very useful, but it will do for now. Maybe we will find something better on your way through this place',),
+
+    'dagger': Weapons("Rasaka's Fang", 'A dagger made of Rasaka’s poisoned fang, still dripping with its poison.\n\nYou may keep this item in your inventory.\nYou may sell this item in the shop.\n','C', 'Dagger', "\nAttack Power +25\n\nInflicts ‘Paralysis’ and ‘Bleeding’ on attack.\n\n‘Paralysis’: The target has a chance to become immobilized.\n‘Bleeding’: The target will lose [1%] health per second.\n\n"),
+
+    'helmet': Equipment('Red Knights Helmet', 'As weird as it is, when you wear this helmet, it gives you more strength\n', 'S', 'Helmet', "\nPhysical Damage Reduction +15%\nStrength +20\nStamina +20")
 }
 
 room['foyer'].add_item(item['torch'])
@@ -43,7 +47,7 @@ room['treasure'].add_item(item['helmet'])
 
 
 
-options = "Options:\nInventory:[View]\nItem:[Take][Drop]\nDirections:[N][S][E][W]\nSystem:[Q] to Quit\n"
+options = "Options:\nInventory:[View]\nItem:[Take][Drop][Equip][Unequip]\nDirections:[N][S][E][W]\nSystem:[Q] to Quit\n"
 
 directions = {'n','s','e','w'}
 
@@ -74,7 +78,7 @@ def solo_leveling():
         name = input('\nWhat is your name Player?').upper().strip()
         if name !='':
             player.name = name
-        print(f"\nWelcome, Player {player.name}:\n You're current location is {player.current_room.name}\n{options}")
+        print(f"\nWelcome, Player {player.name}:\n You're current location is the {player.current_room.name}\n\n{options}")
     elif user_input != 'p':
         second_input = input("\nIf you refuse, you will die from your wounds. Are you sure you don't want to become a Player >>>").lower().strip()
         if second_input == 'p':
@@ -89,7 +93,7 @@ def solo_leveling():
     while user_input == 'p' or second_input == 'p':
         print('============================================================')
         choice = input('Please choose an option:\n').lower().strip()
-        print(f'{options}')
+        print(f'\n{options}')
         if len(choice.split()) == 2:
             handle_item = choice.split()
             # print(handle_item)
@@ -114,6 +118,28 @@ def solo_leveling():
                         print('This item does not exist in your inventory')
                 except:
                     print('This item does note exist in your invenotry')
+            elif handle_item[0] == 'equip':
+                try:
+                    selected_item = item[handle_item[1].lower()]
+                    if selected_item in player.inventory:
+                        player.equip_item(selected_item)
+                        player.drop_item(selected_item)
+                        print(f'You equipped {selected_item.name}')
+                    else:
+                        print('This item does not exist in your inventory')
+                except:
+                    print('This item does not exist in your inventory')
+            elif handle_item[0] == 'unequip':
+                try:
+                    selected_item = item[handle_item[1].lower()]
+                    if selected_item in player.equipped:
+                        player.take_item(selected_item)
+                        player.unequip_item(selected_item)
+                        print(f'You just unequipped {selected_item.name}')
+                    else:
+                        print('This item is not equipped to you currently')
+                except:
+                    print('This item is not equipped to you currently')
         elif choice in directions:
             if hasattr(player.current_room,f'{choice}_to'):
                 print(f'Moving {choice} from your current location')
@@ -125,9 +151,14 @@ def solo_leveling():
             else:
                 print('Cannot move in that direction')
         elif choice == 'view':
-            print('Inventory: \n')
+            print('Inventory:\n')
             for inventory_item in player.inventory:
-                print(f'{inventory_item}\n')
+                print(f'{inventory_item.name}\n\n')
+                print('=====================================================')
+            print('Equipped Items: \n')
+            for equipped_item in player.equipped:
+                print(f'{equipped_item.name}\n\n')
+
         elif choice == 'q':
             print(f'\nThanks for playing {player.name}')
             sys.exit()
