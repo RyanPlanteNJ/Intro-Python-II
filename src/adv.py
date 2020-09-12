@@ -34,7 +34,7 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 item = {
-    'torch': Item('Torch', 'Not very useful, but it will do for now. Maybe we will find something better on your way through this place',),
+    'torch': Item('Torch', 'Not very useful, but it will do for now. Maybe we will find something better on your way through this place', 'E'),
 
     'dagger': Weapons("Rasaka's Fang", 'A dagger made of Rasaka’s poisoned fang, still dripping with its poison.\n\nYou may keep this item in your inventory.\nYou may sell this item in the shop.\n','C', 'Dagger', "\nAttack Power +25\n\nInflicts ‘Paralysis’ and ‘Bleeding’ on attack.\n\n‘Paralysis’: The target has a chance to become immobilized.\n‘Bleeding’: The target will lose [1%] health per second.\n\n"),
 
@@ -45,9 +45,7 @@ room['foyer'].add_item(item['torch'])
 room['overlook'].add_item(item['dagger'])
 room['treasure'].add_item(item['helmet'])
 
-
-
-options = "Options:\nInventory:[View]\nItem:[Take][Drop][Equip][Unequip]\nDirections:[N][S][E][W]\nSystem:[Q] to Quit\n"
+options = "Options:[Options]\nInventory:[View]\nItem:[Take][Drop][Equip][Unequip]\nDirections:[N][S][E][W]\nSystem:[Quit] to Quit\n"
 
 directions = {'n','s','e','w'}
 
@@ -72,28 +70,26 @@ def solo_leveling():
     name = "Solo Leveling"
     player = Player(name, room['outside_start'])
     print('\nYou have completed all the necessary requirements. You have earned the right to become a Player. Will you accept?')
-    user_input = input('\nEnter [P] to become a Player or [Q] to Quit >>>').lower().strip()
-
-    if user_input == "p":
+    user_input = input('\nEnter [Play] to become a Player or [Quit] to Quit >>>').lower().strip()
+    if user_input == "play":
         name = input('\nWhat is your name Player?').upper().strip()
         if name !='':
             player.name = name
-        print(f"\nWelcome, Player {player.name}:\n You're current location is the {player.current_room.name}\n\n{options}")
-    elif user_input != 'p':
+            print(f"\nWelcome, Player {player.name}:\nYou're current location is the {player.current_room}\n\n{options}")
+    elif user_input == 'quit':
         second_input = input("\nIf you refuse, you will die from your wounds. Are you sure you don't want to become a Player >>>").lower().strip()
-        if second_input == 'p':
+        if second_input == 'play':
             name = input('\nWhat is your name Player? >>>').upper().strip()
             if name !='':
                 player.name = name
-                print(f"\nWelcome, Player {player.name}:\n You're current location is {player.current_room}")
-        elif second_input != 'p':
-            print("You have died from your wounds")
+                print(f"\nWelcome, Player {player.name}:\nYou're current location is {player.current_room}\n\n{options}")
+        elif second_input == 'quit':
+            print('You have died from your wounds')
 
 
-    while user_input == 'p' or second_input == 'p':
+    while user_input == 'play' or second_input == 'play':
         print('============================================================')
         choice = input('Please choose an option:\n').lower().strip()
-        print(f'\n{options}')
         if len(choice.split()) == 2:
             handle_item = choice.split()
             # print(handle_item)
@@ -103,6 +99,10 @@ def solo_leveling():
                     if selected_item in player.current_room.items:
                         player.take_item(selected_item)
                         player.current_room.remove_item(selected_item)
+                        print(f'You decided to grab {selected_item.name}\n')
+                        print('\nInventory:\n')
+                        for inventory_item in player.inventory:
+                            print(f'{inventory_item.name}\n\n')
                     else:
                         print('This item does not exist')
                 except:
@@ -124,25 +124,24 @@ def solo_leveling():
                     if selected_item in player.inventory:
                         player.equip_item(selected_item)
                         player.drop_item(selected_item)
-                        print(f'You equipped {selected_item.name}')
+                        print(f'\nYou equipped {selected_item.name}')
                     else:
-                        print('This item does not exist in your inventory')
+                        print('\nThis item does not exist in your inventory')
                 except:
-                    print('This item does not exist in your inventory')
+                    print('\nThis item does not exist in your inventory')
             elif handle_item[0] == 'unequip':
                 try:
                     selected_item = item[handle_item[1].lower()]
                     if selected_item in player.equipped:
                         player.take_item(selected_item)
                         player.unequip_item(selected_item)
-                        print(f'You just unequipped {selected_item.name}')
+                        print(f'\nYou just unequipped {selected_item.name}')
                     else:
-                        print('This item is not equipped to you currently')
+                        print('\nThis item is not equipped to you currently')
                 except:
-                    print('This item is not equipped to you currently')
+                    print('\nThis item is not equipped to you currently')
         elif choice in directions:
             if hasattr(player.current_room,f'{choice}_to'):
-                print(f'Moving {choice} from your current location')
                 player.current_room = getattr(
                 player.current_room, f'{choice}_to'
                 )
@@ -151,15 +150,16 @@ def solo_leveling():
             else:
                 print('Cannot move in that direction')
         elif choice == 'view':
-            print('Inventory:\n')
+            print('\nInventory:\n')
             for inventory_item in player.inventory:
-                print(f'{inventory_item.name}\n\n')
+                print(f'\n{inventory_item}\n\n')
                 print('=====================================================')
             print('Equipped Items: \n')
             for equipped_item in player.equipped:
                 print(f'{equipped_item.name}\n\n')
-
-        elif choice == 'q':
+        elif choice == "options":
+            print(f'\n{options}')
+        elif choice == 'quit':
             print(f'\nThanks for playing {player.name}')
             sys.exit()
         else:
